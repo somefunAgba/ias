@@ -1,0 +1,203 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{epsf}
+\usepackage{color}
+\newtheorem{theorem}{Theorem}
+\setlength{\topmargin}{0.1in}
+\setlength{\oddsidemargin}{0in}
+\setlength{\evensidemargin}{0in}
+\setlength{\headheight}{0in}
+\setlength{\headsep}{0in}
+\setlength{\textheight}{9in}
+\setlength{\textwidth}{6.5in}
+\renewcommand{\dblfloatpagefraction}{0.9}
+\renewcommand{\floatpagefraction}{0.9}
+\newenvironment{bibparagraph}{\begin{list}{}{ %
+    \setlength{\labelsep}{-\leftmargin} %
+    \setlength{\labelwidth}{0pt} %
+    \setlength{\itemindent}{-\leftmargin} %
+    \setlength{\listparindent}{0pt}}}{\end{list}}
+\def\makefigure#1#2{\begin{figure}
+\begin{center}
+\input{#1}
+\end{center}
+\caption{#2}
+\label{#1}
+\end{figure}}
+
+\def\limplies{\; \supset \;}
+\def\land{\: \wedge \:}
+\def\lor{\: \vee \:}
+\def\iff{\; \equiv \;}
+\def\lnot{\neg}
+\def\lforall#1{\forall \: #1 \;}
+\def\lexists#1{\exists \: #1 \;}
+\def\glitch#1{{\tt #1}} % glitch on
+%\def\glitch#1{} % glitch off
+\def\comment#1{}
+\def\pnil{[\;]}
+\def\pif{\; \mbox{\tt :- } \;}
+\def\tuple#1{$\langle #1\rangle$}
+\def\mtuple#1{\langle #1\rangle}
+\def\ceiling#1{\lceil #1\rceil}
+\def\floor#1{\lfloor #1\rfloor}
+\def\centerps#1{\begin{center}
+\leavevmode
+\epsfbox{#1}
+\end{center}}
+\def\argmax{\mathop{\rm argmax}}
+\def\argmin{\mathop{\rm argmin}}
+\def\grad{\nabla\!}
+\def\celsius{^\circ\mbox{C}}
+%\long\def\answer#1{}  % comment out for solutions
+%\long\def\question#1{#1} % comment out for solutions
+\long\def\answer#1{{\color {blue} { #1}}}  % comment in for solution
+\long\def\question#1{} % comment in for solution
+\newcommand{\mb}[1]{{\mathbf{#1}}}
+
+\def\z{{\bf z}}
+\def\z{{\bf z}}
+\def\x{{\bf x}}
+\def\w{{\bf w}}
+
+\begin{document}
+{
+\small
+Submitted by: {Oluwasegun Somefun}, somefuno@oregonstate.edu
+}
+{\Large
+\begin{center}
+AI534 --- Written Homework Assignment 2 (40 pts) --- {Due Oct 29th, 2021}
+\end{center}
+}
+%Please submit via TEACH electronically.
+\begin{enumerate}
+\item (Subgradient) (5 pts) Consider the $L_1$ norm function for $\x\in R^d$: $f(\x)=|\x|_1=\sum_{i=1}^d|x_i|$. Show that ${\bf g}=[g_1, g_2, ...,g_d]^T$ is a subgradient of $f(\x)$ at $\x={\bf 0}$ if every $g_i \in [-1,1] $. Hint: go back to the definition of subgradient: $g$ is a subgradient of $f(x)$ at $x_0$ if $\forall x$, $f(x)\geq f(x_0)+g^T(x-x_0)$
+
+\answer{
+    Given the $\mathcal{L}_1$ norm function $f(\x)=\|\x\|_1=\sum_{i=1}^d|x_i|$, having each element as absolute values. Recall that, $\forall x$, the subgradient $g$ of $f(\x)$ is defined such that for a convex function: 
+    $$f(x)\geq f(x_0)+g^T(x-x_0)$$
+    
+    It is known that $\forall x$: when $x_0>0$, then $g = \grad{f}(x) = 1$; when $x_0<0$, then $g = \grad{f}(x) = -1$.
+
+    At $x_0=0$, the subgradient expression of the convex function reduces to the inequality
+    $$f(x)\geq g^T\,x \equiv |x|\geq g\,x$$
+    such that the definition of the gradient of the absolute value function is satisfied if and only if $g$ is $1$ or $-1$, that is $g\in \left[-1,1\right]$
+
+    Therefore, ${\bf g}=[g_1, g_2, ...,g_d]^T$ is a subgradient of $f(\x)=\|\x\|_1$ at $\x={\bf 0}$ if every $g_i \in [-1,1] $.
+}
+
+\item (Perceptron) (5 pts) Consider the following argument. We know that the number of steps for the perceptron algorithm to converge for linearly separable data is bounded by $(\frac{D}{\gamma})^2$. If we multiple the input $\x$ by a small constant $\alpha$, which effectively reduces the bound on $|\x|$ to $D' =\alpha D$, we can reduce the upper bound to $(\alpha \frac{D}{\gamma})^2$. Is this argument correct? Why?
+
+\answer{
+    The argument above is correct. The number of steps for the perceptron algorithm to converge for linearly separable data is bounded by $(\alpha\frac{D}{\gamma})^2$.
+    This argument can be proved by showing that given the rescaled space scenario above, the direction of the weight parameter at the $k$th step converges to a unit vector $\|\omega^*\|=1$, that is
+    $$
+     \frac{\omega^{*T}\omega_k}{\|\omega^*\|\|\omega_k\|} \le 1
+    $$
+    and that for each training sample $\|\x_i\| \le D \in \mathbb{R}$, such that the decision boundary is bounded by a margin ($\gamma$) described as $y\,\omega^*\,x_k \ge \gamma>0$.
+    Let $k$ be the $k$th mistake step at which, given a small constant $\alpha>0$ the update is
+    $$\omega_k = \omega_{k-1} + \alpha\,y\,x_k $$
+    Assuming $\omega_{k-1} = 0$, to prove this, we need to first show that
+    \begin{enumerate}
+        \item ${\omega^{*T}\omega_k}$ grows quickly as k increases
+        \item $\|\omega_k\|$ does not grow quickly, that is: $\|\omega_k\|$ is getting close to $\|\omega^*\|$
+    \end{enumerate}
+
+    For Part (a):
+    \begin{align*}
+        {\omega^{*T}\omega_k} &= \omega^{*T}( \omega_{k-1} + \alpha\,\,y\,x_k )= \omega^{*T}\omega_{k-1} + \alpha\,y\,\omega^*\,x_k\\ 
+         &\ge \omega^{*T}\omega_{k-1} + \alpha\gamma \ge k\gamma
+    \end{align*}
+    Similarly, for Part (b):
+    \begin{align*}
+        {\omega_k^{T}\omega_k} &= (\omega_{k-1} + \alpha\,y\,x_k)^{T}(\omega_{k-1} + \alpha\,y\,x_k)\\
+        &= \omega_k^{T}\omega_{k-1} + \alpha\,2\,y\,\omega_{k-1}\,x_k + (\alpha\,y)^2\,x_k^{T}x_{k}\\ & \le \omega_k^{T}\omega_{k-1}  + (\alpha\,D)^2 \le k\,(\alpha\,D)^2\\
+        \therefore \|\omega_k\| &= \sqrt{{\omega_k^{T}\omega_k}}=\sqrt{k}(\alpha\,D)
+    \end{align*}
+
+    $$
+    \frac{\omega^{*T}\omega_k}{\|\omega^*\|\|\omega_k\|} = \frac{k\gamma}{\sqrt{k}(\alpha\,D)} \le 1
+    $$
+    Therefore, the upper bound number of steps it takes the perceptron algorithm to converge is reduced to:
+    $$
+    k \le \left(\alpha\,\frac{D}{\gamma}\right)^2
+    $$
+    This concludes the proof.
+}
+
+\item (Cubic Kernels.) (10 pts)  In class, we showed that the quadratic
+kernel $K(\x_i,\x_j) = (\x_i \cdot \x_j + 1)^2$ was equivalent to
+mapping each $\x=(x_1,x_2)\in R^2 $ into a higher dimensional space where
+\[\Phi(\x) = (x_1^2, x_2^2, \sqrt{2}x_1x_2, \sqrt{2}x_1, \sqrt{2}x_2, 1).\]
+Now consider the cubic kernel $K(\x_i,\x_j) = (\x_i \cdot \x_j + 1)^3$.  What is the corresponding
+$\Phi$ function?
+
+\answer{
+    $$K(\x_i,\x_j) = (\x_i \cdot \x_j + 1)^3$$
+    Let $$\x_i=x_{i1},x_{i2},\x_j=x_{j1},x_{j2}$$ and 
+    $$a = x_{i1}x_{j1} +x_{i2}x_{j2} = a_1 + a_2$$
+    Then, we can rewrite
+    $$K(\x_i,\x_j) = (a + 1)^3 = a^3 + 3a^2 + 3a + 1$$
+    where
+    $$a^2 = (a_1 + a_2)^2 = a_1^2 + 2a_1a_2 + a_2^2\, \implies 3a^2 =  3a_1^2 + 6a_1a_2 + 3a_2^2$$
+    $$a^3 = (a_1 + a_2)^3 = a_1^3 + 3a_1^2 a_2 + 3a_2^2 a_1 + a_2^3$$
+    $\therefore$
+    $$
+    K(\x_i,\x_j) = \left( a_1^3 + 3a_1^2 a_2 + 3a_2^2 a_1 + a_2^3 + 3a_1^2 + 6a_1a_2 + 3a_2^2 + 3a_1 + 3a_2 + 1  \right)$$
+    $$
+    K(\x_i,\x_j) = \left( a_1^3 + 3a_1^2 + 3a_1 + 3a_1^2 a_2 + 6a_1a_2 + 3a_2^2 a_1 + 3a_2 + 3a_2^2 + a_2^3 + 1  \right)
+    $$
+    Recall that $a_1 = x_{i1}x_{j1}$ and $a_2 = x_{i2}x_{j2}$. Therefore:
+    \begin{align*}
+    K(\x_i,\x_j) &= \left( x_{i1}^3 , \sqrt{3}x_{i1}^2 , \sqrt{3}x_{i1} , \sqrt{3}x_{i1}^2 x_{i2} , \sqrt{6}x_{i1}x_{i2} , \sqrt{3}x_{i2}^2 x_{i1} , \sqrt{3}x_{i2} , \sqrt{3}x_{i2}^2 , x_{i2}^3 , 1  \right)\cdot\\
+    &\left( x_{j1}^3 , \sqrt{3}x_{j1}^2 , \sqrt{3}x_{j1} , \sqrt{3}x_{j1}^2 x_{j2} , \sqrt{6}x_{j1}x_{j2} , \sqrt{3}x_{j2}^2 x_{j1} , \sqrt{3}x_{j2}, \sqrt{3}x_{j2}^2 , x_{j2}^3 , 1  \right)\\
+    K(\x_i,\x_j) &= \Phi(\x_i)\cdot\Phi(\x_j)
+    \end{align*}
+    which means that the kernel $ K(\x_i,\x_j) = (\x_i \cdot \x_j + 1)^3$ in terms of explicit feature mapping is equivalent to $ K(\x_i,\x_j) = \Phi(\x_i)\cdot\Phi(\x_j)$.
+}
+
+\item (Kernel or not). In the following problems, suppose that $K$, $K_1$ and $K_2$ are kernels with feature maps $\phi$, $\phi_1$ and $\phi_2$. For the following functions $K'(x, z)$, state if they are kernels or not. If they are kernels, write down the corresponding
+feature map, in terms of $\phi$, $\phi_1$ and $\phi_2$ and $c$, $c_1$, $c_2$. If they are not kernels, prove that they are not.
+
+\answer{
+    The necessary and sufficient conditions for a function to be a valid kernel function is that for any finite sample, its corresponding kernel matrix $K'$ be \textbf{positive semi-definite (p.s.d)} and \textbf{symmetric}  . This is also known as the \textbf{Mercer's theorem}  
+}
+
+\begin{itemize}
+\item (5 pts) $K'(\x, \z) = cK(\x, \z)$ for $c > 0$.\\
+\answer{
+    According to the properties of kernels: any positive rescaling of a kernel is also a kernel. Therefore $K'$ is a kernel.
+    The corresponding feature map is given as
+    $$K'(\x, \z) = c\,\langle\phi(\x), \phi(\z)\rangle = \langle\sqrt{c}\,\phi(\x), \sqrt{c}\,\phi(\z)\rangle $$
+}
+\item (5 pts) $K'(\x,\z) = cK(\x, \z)$ for $c < 0$.\\
+\answer{ 
+    $K'$ is not a kernel. As a counter-example, this is proved as follows: since $c<0$, $\exists$ an element in the transformed matrix $K'$ that is negative definite, which violates the necessary p.s.d \textbf{Mercer's conditions} stated above.
+    
+    Therefore the scaling of $K$ to $K'$ is \textbf{not} a valid kernel.
+}
+\item (5 pts) $K'(\x,\z)= c_1K_1(\x, \z)+c_2K_2(\x,\z)$ for $c_1, c_2 >0$.\\
+\answer{
+    According to the properties of kernels: any positive linear combination of kernels is also a kernel. Therefore $K'$ is a kernel.
+    The corresponding feature map is given as
+    $$K'(\x, \z) = \langle\sqrt{c_1}\,\phi_1(\x), \sqrt{c_1}\,\phi_1(\z)\rangle + \langle\sqrt{c_2}\,\phi_2(\x), \sqrt{c_2}\,\phi_2(\z)\rangle = \langle\phi'(\x), \phi'(\z)\rangle $$
+
+    where the number of features in $\phi'$ is a concatenation of the number features in both feature maps $\phi_1$ and $\phi_2$
+
+}
+\item (5 pts) $K'(\x,\z)= K_1(\x, \z)K_2(\x,\z)$ .\\
+\answer{
+    According to the properties of kernels: any product of two or more kernels is also a kernel. Therefore $K'$ is a kernel.
+    The corresponding feature map is given as
+    $$K'(\x, \z) = \langle\phi_1(\x),\phi_1(\z)\rangle\, \langle\phi_2(\x), \phi_2(\z)\rangle = \langle\phi'(\x), \phi'(\z)\rangle $$
+
+    where the number of features in $\phi'$ is a linear product of the number features in both feature maps $\phi_1$ and $\phi_2$
+}
+
+\end{itemize}
+
+\end{enumerate}
+
+\end{document}
